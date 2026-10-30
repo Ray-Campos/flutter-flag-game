@@ -47,7 +47,7 @@ O código-fonte está modularizado para facilitar a manutenção e escalabilidad
    ```
 2. Acesse a pasta do projeto:
    ```bash
-   cd flutter-flag-game
+   cd flag-game
    ```
 3. Baixe as dependências do Flutter:
    ```bash
