@@ -3,7 +3,7 @@
 Um aplicativo interativo desenvolvido em Flutter com o objetivo de testar e aprimorar os conhecimentos dos jogadores sobre as bandeiras de países de todo o mundo. O projeto possui foco em uma arquitetura limpa, gerenciamento de estado eficiente e execução offline.
 
 ## Demonstração
-[Assistir ao vídeo de demonstração do aplicativo](https://www.google.com)
+[Assistir ao vídeo de demonstração do aplicativo](https://drive.google.com/file/d/1Yqrx3Mol-JPCFA2OAru4JfY9X4pC4vyn/view?usp=sharing)
 
 ## Funcionalidades
 
