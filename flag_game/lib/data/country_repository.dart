@@ -11,7 +11,7 @@ class CountryRepository {
     
     _countries = data
         .map((json) => Country.fromJson(json as Map<String, dynamic>))
-        .where((country) => country.code.isNotEmpty)
+        .where((country) => country.code.isNotEmpty && country.name != 'Desconhecido')
         .toList();
   }
 

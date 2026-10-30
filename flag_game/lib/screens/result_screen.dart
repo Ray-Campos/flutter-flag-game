@@ -1,9 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_state.dart';
+import '../services/leaderboard_service.dart';
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   const ResultScreen({super.key});
+
+  @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _saveCurrentScore();
+  }
+
+  Future<void> _saveCurrentScore() async {
+    final gameState = Provider.of<GameState>(context, listen: false);
+    
+    if (gameState.totalAnswered > 0) {
+      final entry = LeaderboardEntry(
+        score: gameState.score,
+        total: gameState.totalAnswered,
+        mode: gameState.currentMode,
+        time: gameState.initialTime,
+      );
+      await LeaderboardService().saveScore(entry);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,76 +40,40 @@ class ResultScreen extends StatelessWidget {
     final percentage = total > 0 ? (score / total * 100).toStringAsFixed(1) : '0.0';
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text('Fim de Jogo', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Fim de Jogo'),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.blueAccent,
-        foregroundColor: Colors.white,
-        elevation: 0,
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(32.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.emoji_events_rounded,
-                size: 120,
-                color: Colors.amber,
-              ),
-              const SizedBox(height: 24),
+              const Icon(Icons.emoji_events, size: 80, color: Colors.amber),
+              const SizedBox(height: 16),
               const Text(
-                'Tempo Esgotado!',
-                style: TextStyle(
-                  fontSize: 28, 
-                  fontWeight: FontWeight.w900,
-                  color: Colors.black87,
-                ),
+                'Resultados Finais',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 40),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+              const SizedBox(height: 48),
+              _buildStatRow('Perguntas Respondidas:', '$total'),
+              const SizedBox(height: 16),
+              _buildStatRow('Total de Acertos:', '$score'),
+              const SizedBox(height: 16),
+              _buildStatRow('Percentual de Acertos:', '$percentage%'),
+              const SizedBox(height: 64),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.home),
+                label: const Text('Voltar ao Menu Principal'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 32.0),
-                  child: Column(
-                    children: [
-                      _buildStatRow(Icons.help_outline_rounded, 'Perguntas:', '$total', Colors.blue),
-                      const Divider(height: 32),
-                      _buildStatRow(Icons.check_circle_outline_rounded, 'Acertos:', '$score', Colors.green),
-                      const Divider(height: 32),
-                      _buildStatRow(Icons.percent_rounded, 'Precisão:', '$percentage%', Colors.orange),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 56),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.home_rounded, size: 28),
-                  label: const Text(
-                    'Menu Principal',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    foregroundColor: Colors.white,
-                    elevation: 6,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                  },
-                ),
+                onPressed: () {
+                  Navigator.popUntil(context, (route) => route.isFirst);
+                },
               )
             ],
           ),
@@ -92,19 +82,17 @@ class ResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatRow(IconData icon, String label, String value, Color iconColor) {
+  Widget _buildStatRow(String label, String value) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Icon(icon, color: iconColor, size: 28),
-        const SizedBox(width: 16),
         Text(
           label,
-          style: const TextStyle(fontSize: 18, color: Colors.black54, fontWeight: FontWeight.w600),
+          style: const TextStyle(fontSize: 18, color: Colors.black54),
         ),
-        const Spacer(),
         Text(
           value,
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ],
     );

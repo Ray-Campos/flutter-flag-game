@@ -16,12 +16,17 @@ class GameState extends ChangeNotifier {
   int totalAnswered = 0;
   
   int timeRemaining = 0;
+  int initialTime = 0; 
+  String currentMode = ''; 
+  
   Timer? _timer;
   bool isGameOver = false;
 
   GameState({required this.repository});
 
   void startGame(String continent, int durationInSeconds) {
+    currentMode = continent;
+    initialTime = durationInSeconds;
     _availableCountries = repository.getCountriesByContinent(continent);
     score = 0;
     totalAnswered = 0;
@@ -48,11 +53,9 @@ class GameState extends ChangeNotifier {
   void _generateNextQuestion() {
     if (_availableCountries.isEmpty) return;
 
-    // Pick a correct answer
     final correctIndex = _random.nextInt(_availableCountries.length);
     final correctCountry = _availableCountries[correctIndex];
 
-    // Pick 3 wrong answers
     final options = <Country>{correctCountry};
     while (options.length < 4) {
       final wrongIndex = _random.nextInt(_availableCountries.length);

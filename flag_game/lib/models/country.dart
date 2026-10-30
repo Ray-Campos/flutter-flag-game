@@ -12,8 +12,8 @@ class Country {
   factory Country.fromJson(Map<String, dynamic> json) {
     return Country(
       code: json['code']?.toString() ?? '',
-      name: json['pt']?.toString() ?? 'Desconhecido', // Updated key mapping
-      continent: json['continent']?.toString() ?? 'Aleatório', // Fallback for missing data
+      name: json['name']?.toString() ?? 'Desconhecido',
+      continent: json['continent']?.toString() ?? 'Aleatório',
     );
   }
 
